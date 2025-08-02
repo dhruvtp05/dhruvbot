@@ -3,7 +3,17 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
 const { token } = require('./config.json');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMessageReactions
+	],
+	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+});
+
+const tomatoedMessages = new Set();
 
 client.cooldowns = new Collection();
 client.commands = new Collection();
@@ -28,48 +38,32 @@ client.once(Events.ClientReady, c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
-client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
-	const command = client.commands.get(interaction.commandName);
+client.on('messageReactionAdd', async (reaction, user) => {
+	if (user.bot) return;
 
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
+	try {
+		if (reaction.partial) await reaction.fetch();
+		if (reaction.message.partial) await reaction.message.fetch();
+	} catch (err) {
+		console.error('Failed to fetch partials:', err);
 		return;
 	}
 
-	const { cooldowns } = interaction.client;
+	if (reaction.emoji.name !== '🍅') return;
 
-	if (!cooldowns.has(command.data.name)) {
-		cooldowns.set(command.data.name, new Collection());
-	}
+	const messageId = reaction.message.id;
 
-	const now = Date.now();
-	const timestamps = cooldowns.get(command.data.name);
-	const defaultCooldownDuration = 3;
-	const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
+	if (tomatoedMessages.has(messageId)) return;
 
-	if (timestamps.has(interaction.user.id)) {
-		const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
+	if (reaction.count === 3) {
+		tomatoedMessages.add(messageId);
 
-		if (now < expirationTime) {
-			const expiredTimestamp = Math.round(expirationTime / 1000);
-			return interaction.reply({ content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`, flags: MessageFlags.Ephemeral });
-		}
-	}
-
-	timestamps.set(interaction.user.id, now);
-	setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
-		}
+		await reaction.message.channel.send({
+			content: `🍅 Tomato!`,
+			files: ['https://cdn.discordapp.com/attachments/1356782088048742561/1400979231651139654/bc6704c40b442e34639ff3a798a6d954.png?ex=688e9b15&is=688d4995&hm=e0bde55ffc5c3c19fc1e742a551abcfbccf3ae854c2d14b210fca1750860a843&']
+		});
 	}
 });
+
 
 client.login(token);
