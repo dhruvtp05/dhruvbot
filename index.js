@@ -11,8 +11,17 @@ const { token, clientId, guildId } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
-// Create the bot client
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMessageReactions
+	],
+	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+});
+
+const tomatoedMessages = new Set();
 
 // Command collection
 client.commands = new Collection();
@@ -38,50 +47,43 @@ for (const folder of commandFolders) {
   }
 }
 
-// On ready: deploy commands + log in
-client.once(Events.ClientReady, async c => {
-  console.log(`✅ Ready! Logged in as ${c.user.tag}`);
-
-  // Deploy commands on startup (guild-based for instant updates)
-  try {
-    const rest = new REST({ version: '10' }).setToken(token);
-    await rest.put(
-      Routes.applicationGuildCommands(clientId, guildId),
-      { body: commands },
-    );
-    console.log(`🔗 Successfully deployed ${commands.length} commands.`);
-  } catch (error) {
-    console.error('❌ Failed to deploy commands:', error);
-  }
+client.once(Events.ClientReady, c => {
+	console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
-// Handle interactions
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+client.on('messageReactionAdd', async (reaction, user) => {
+	if (user.bot) return;
 
-  const command = client.commands.get(interaction.commandName);
+	try {
+		if (reaction.partial) await reaction.fetch();
+		if (reaction.message.partial) await reaction.message.fetch();
+	} catch (err) {
+		console.error('Failed to fetch partials:', err);
+		return;
+	}
 
-  if (!command) {
-    console.error(`No command matching ${interaction.commandName} found.`);
-    return;
-  }
+	console.log(`Reaction added: ${reaction.emoji.name} by ${user.tag}`);
 
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({ 
-        content: '❌ There was an error while executing this command!', 
-        ephemeral: true 
-      });
-    } else {
-      await interaction.reply({ 
-        content: '❌ There was an error while executing this command!', 
-        ephemeral: true 
-      });
-    }
-  }
+
+	if (reaction.emoji.name !== '🍅') return;
+
+	const messageId = reaction.message.id;
+
+	if (tomatoedMessages.has(messageId)) return;
+
+	if (reaction.count === 3) {
+		tomatoedMessages.add(messageId);
+
+		await reaction.message.reply({
+			content: `🍅 Tomato!`,
+			files: ['https://ibb.co/RpRQ5xCM']
+		});
+	}
 });
+
+client.on('ready', () => {
+	console.log('Bot is ready and watching reactions.');
+});
+
 
 client.login(token);
