@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { logAction } = require('./modlog'); 
-const { addWarning } = require('./warningStore');
+const { logAction } = require('../helper/modlog'); 
+const { addWarning } = require('../helper/warningStore');
 
 
 module.exports = {

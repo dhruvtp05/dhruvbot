@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { getWarnings } = require('./warningStore');
+const { getWarnings } = require('../helper/warningStore');
 
 module.exports = {
   data: new SlashCommandBuilder()

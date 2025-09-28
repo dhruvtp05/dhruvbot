@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
-const { clearWarnings } = require('./warningStore');
-const { logAction } = require('./modlog');
+const { clearWarnings } = require('../helper/warningStore');
+const { logAction } = require('../helper/modlog');
 
 module.exports = {
   data: new SlashCommandBuilder()
