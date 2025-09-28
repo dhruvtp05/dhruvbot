@@ -49,6 +49,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		return;
 	}
 
+	console.log(`Reaction added: ${reaction.emoji.name} by ${user.tag}`);
+
+
 	if (reaction.emoji.name !== '🍅') return;
 
 	const messageId = reaction.message.id;
@@ -58,11 +61,15 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (reaction.count === 3) {
 		tomatoedMessages.add(messageId);
 
-		await reaction.message.channel.send({
+		await reaction.message.reply({
 			content: `🍅 Tomato!`,
-			files: ['https://cdn.discordapp.com/attachments/1356782088048742561/1400979231651139654/bc6704c40b442e34639ff3a798a6d954.png?ex=688e9b15&is=688d4995&hm=e0bde55ffc5c3c19fc1e742a551abcfbccf3ae854c2d14b210fca1750860a843&']
+			files: ['https://ibb.co/RpRQ5xCM']
 		});
 	}
+});
+
+client.on('ready', () => {
+	console.log('Bot is ready and watching reactions.');
 });
 
 
