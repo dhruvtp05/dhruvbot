@@ -150,7 +150,7 @@ Permissions: Control what actions the bot can perform
 
 Slash Commands:
 
-/info ==
+/info 
 /mute
 /ban
 /kick
@@ -186,4 +186,4 @@ Potential improvements for DhruvBot:
 Dhruv Patel
 
 GitHub: @dhruvtp05
-Discord: [Your Discord tag if you want to share]
+
