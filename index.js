@@ -10,6 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 require("dotenv").config();
 
+const { sendShutdownDm } = require('./commands/helper/serverLogger');
 const express = require("express");
 const app = express();
 
@@ -116,5 +117,30 @@ if (!process.env.DISCORD_TOKEN) {
 	console.error('Missing DISCORD_TOKEN in environment variables.');
 	process.exit(1);
 }
+
+let shuttingDown = false;
+async function gracefulShutdown(signal) {
+	if (shuttingDown) return;
+	shuttingDown = true;
+	console.log(`Shutting down (${signal})...`);
+	try {
+		if (client.isReady()) {
+			await sendShutdownDm(client, `Host sent ${signal} (bot process stopping).`);
+		}
+	} catch (err) {
+		console.error('Shutdown notify error:', err);
+	}
+	try {
+		await client.destroy();
+	} catch {}
+	process.exit(0);
+}
+
+process.once('SIGINT', () => {
+	void gracefulShutdown('SIGINT');
+});
+process.once('SIGTERM', () => {
+	void gracefulShutdown('SIGTERM');
+});
 
 client.login(process.env.DISCORD_TOKEN);
