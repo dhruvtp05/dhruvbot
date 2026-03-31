@@ -11,6 +11,13 @@ const { token, clientId, guildId } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const express = require("express");
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+app.get("/", (req, res) => res.send("Bot is running"));
+app.listen(PORT, () => console.log(`Web server listening on ${PORT}`));
+
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
