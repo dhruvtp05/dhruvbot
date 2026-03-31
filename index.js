@@ -10,6 +10,7 @@ const {
 const { token, clientId, guildId } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
+require("dotenv").config();
 
 const express = require("express");
 const app = express();
@@ -93,4 +94,4 @@ client.on('ready', () => {
 });
 
 
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);
