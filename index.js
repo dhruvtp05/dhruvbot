@@ -4,10 +4,8 @@ const {
   GatewayIntentBits, 
   Collection, 
   Events, 
-  REST, 
-  Routes 
+  Partials
 } = require('discord.js');
-const { token, clientId, guildId } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 require("dotenv").config();
@@ -26,7 +24,7 @@ const client = new Client({
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMessageReactions
 	],
-	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
 const tomatoedMessages = new Set();
@@ -83,8 +81,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		tomatoedMessages.add(messageId);
 
 		await reaction.message.reply({
-			content: `🍅 Tomato!`,
-			files: ['https://ibb.co/RpRQ5xCM']
+			content: '🍅 Tomato! https://ibb.co/RpRQ5xCM'
 		});
 	}
 });
@@ -93,5 +90,10 @@ client.on('ready', () => {
 	console.log('Bot is ready and watching reactions.');
 });
 
+
+if (!process.env.DISCORD_TOKEN) {
+	console.error('Missing DISCORD_TOKEN in environment variables.');
+	process.exit(1);
+}
 
 client.login(process.env.DISCORD_TOKEN);
