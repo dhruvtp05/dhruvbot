@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 const { logAction } = require('../helper/modlog');
 
 
@@ -18,15 +18,15 @@ module.exports = {
 
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return interaction.reply({ content: '❌ You do not have permission to unmute members.', ephemeral: true });
+      return interaction.reply({ content: '❌ You do not have permission to unmute members.', flags: MessageFlags.Ephemeral });
     }
 
     if (!target || !target.manageable) {
-      return interaction.reply({ content: '❌ Cannot unmute this user.', ephemeral: true });
+      return interaction.reply({ content: '❌ Cannot unmute this user.', flags: MessageFlags.Ephemeral });
     }
 
     if (!muteRole || !target.roles.cache.has(muteRole.id)) {
-      return interaction.reply({ content: '❌ That user is not muted.', ephemeral: true });
+      return interaction.reply({ content: '❌ That user is not muted.', flags: MessageFlags.Ephemeral });
     }
 
     // Add role

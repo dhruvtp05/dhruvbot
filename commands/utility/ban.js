@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 const { logAction } = require('../helper/modlog');
 
 
@@ -21,19 +21,19 @@ module.exports = {
 
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return interaction.reply({ content: '❌ You do not have permission to ban members.', ephemeral: true });
+      return interaction.reply({ content: '❌ You do not have permission to ban members.', flags: MessageFlags.Ephemeral });
     }
 
     if (!target || !target.bannable) {
-      return interaction.reply({ content: '❌ Cannot ban this user.', ephemeral: true });
+      return interaction.reply({ content: '❌ Cannot ban this user.', flags: MessageFlags.Ephemeral });
     }
 
     if (target.id === interaction.user.id) {
-      return interaction.reply({ content: '❌ You cannot ban yourself.', ephemeral: true });
+      return interaction.reply({ content: '❌ You cannot ban yourself.', flags: MessageFlags.Ephemeral });
     }
 
     if (target.id === interaction.client.user.id) {
-      return interaction.reply({ content: '❌ You cannot ban me.', ephemeral: true });
+      return interaction.reply({ content: '❌ You cannot ban me.', flags: MessageFlags.Ephemeral });
     }
 
 

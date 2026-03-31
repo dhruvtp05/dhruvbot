@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 const { logAction } = require('../helper/modlog'); 
 const { addWarning } = require('../helper/warningStore');
 
@@ -21,11 +21,11 @@ module.exports = {
     const reason = interaction.options.getString('reason') || 'No reason provided';
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return interaction.reply({ content: '❌ You don’t have permission to warn users.', ephemeral: true });
+      return interaction.reply({ content: '❌ You don’t have permission to warn users.', flags: MessageFlags.Ephemeral });
     }
 
     if (!target || target.id === interaction.user.id) {
-      return interaction.reply({ content: '❌ Invalid target.', ephemeral: true });
+      return interaction.reply({ content: '❌ Invalid target.', flags: MessageFlags.Ephemeral });
     }
 
     try {

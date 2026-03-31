@@ -20,6 +20,7 @@ app.listen(PORT, () => console.log(`Web server listening on ${PORT}`));
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMessageReactions
@@ -28,16 +29,18 @@ const client = new Client({
 });
 
 const tomatoedMessages = new Set();
+const truedMessages = new Set();
 
 // Command collection
 client.commands = new Collection();
-const commands = [];
 
 // Read all command files (supports subfolders)
 const commandsPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(commandsPath);
 
 for (const folder of commandFolders) {
+  if (folder === 'helper') continue;
+
   const folderPath = path.join(commandsPath, folder);
   const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
 
@@ -46,16 +49,25 @@ for (const folder of commandFolders) {
     const command = require(filePath);
     if ('data' in command && 'execute' in command) {
       client.commands.set(command.data.name, command);
-      commands.push(command.data.toJSON());
     } else {
       console.log(`[WARNING] The command at ${filePath} is missing "data" or "execute". Skipping.`);
     }
   }
 }
 
-client.once(Events.ClientReady, c => {
-	console.log(`Ready! Logged in as ${c.user.tag}`);
-});
+// Load and register all event handlers from ./events
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
 
 client.on('messageReactionAdd', async (reaction, user) => {
 	if (user.bot) return;
@@ -71,25 +83,34 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	console.log(`Reaction added: ${reaction.emoji.name} by ${user.tag}`);
 
 
-	if (reaction.emoji.name !== '🍅') return;
-
 	const messageId = reaction.message.id;
 
-	if (tomatoedMessages.has(messageId)) return;
+	if (reaction.emoji.name === '🍅') {
+		if (tomatoedMessages.has(messageId)) return;
 
-	if (reaction.count === 3) {
-		tomatoedMessages.add(messageId);
+		if (reaction.count === 3) {
+			tomatoedMessages.add(messageId);
 
-		await reaction.message.reply({
-			content: '🍅 Tomato! https://ibb.co/RpRQ5xCM'
-		});
+			await reaction.message.reply({
+				content: '🍅 Tomato! https://ibb.co/RpRQ5xCM'
+			});
+		}
+		return;
+	}
+
+	if (reaction.emoji.name === 'true') {
+		if (truedMessages.has(messageId)) return;
+
+		if (reaction.count === 3) {
+			truedMessages.add(messageId);
+			const trueImagePath = path.join(__dirname, 'images', 'truth nuke.png');
+
+			await reaction.message.reply({
+				files: [trueImagePath]
+			});
+		}
 	}
 });
-
-client.on('ready', () => {
-	console.log('Bot is ready and watching reactions.');
-});
-
 
 if (!process.env.DISCORD_TOKEN) {
 	console.error('Missing DISCORD_TOKEN in environment variables.');

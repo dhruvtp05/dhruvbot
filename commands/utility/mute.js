@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
-const { logAction } = require('./modlog');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
+const { logAction } = require('../helper/modlog');
 
 
 module.exports = {
@@ -25,11 +25,11 @@ module.exports = {
     const reason = interaction.options.getString('reason') || `Muted for ${duration} minute(s)`;
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return interaction.reply({ content: '❌ You do not have permission to mute members.', ephemeral: true });
+      return interaction.reply({ content: '❌ You do not have permission to mute members.', flags: MessageFlags.Ephemeral });
     }
 
     if (!target || !target.manageable) {
-      return interaction.reply({ content: '❌ Cannot mute this user.', ephemeral: true });
+      return interaction.reply({ content: '❌ Cannot mute this user.', flags: MessageFlags.Ephemeral });
     }
 
     let muteRole = interaction.guild.roles.cache.find(role => role.name === 'Muted');

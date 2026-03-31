@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const { getWarnings } = require('../helper/warningStore');
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
     const warnings = getWarnings(target.id);
 
     if (warnings.length === 0) {
-      return interaction.reply({ content: `✅ ${target.tag} has no warnings.`, ephemeral: true });
+      return interaction.reply({ content: `✅ ${target.tag} has no warnings.`, flags: MessageFlags.Ephemeral });
     }
 
     const embed = new EmbedBuilder()

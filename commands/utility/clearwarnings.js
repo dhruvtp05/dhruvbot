@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 const { clearWarnings } = require('../helper/warningStore');
 const { logAction } = require('../helper/modlog');
 
@@ -18,7 +18,7 @@ module.exports = {
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       return interaction.reply({
         content: '❌ You do not have permission to clear warnings.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -27,7 +27,7 @@ module.exports = {
     if (!success) {
       return interaction.reply({
         content: `✅ ${target.tag} has no warnings.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
