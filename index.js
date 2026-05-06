@@ -147,4 +147,10 @@ process.once('SIGTERM', () => {
 	void gracefulShutdown('SIGTERM');
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.on('error', (err) => console.error('[Discord client]', err));
+client.on('warn', (msg) => console.warn('[Discord client]', msg));
+
+client.login(process.env.DISCORD_TOKEN).catch((err) => {
+	console.error('Discord login failed:', err);
+	process.exit(1);
+});
