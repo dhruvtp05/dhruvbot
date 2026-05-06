@@ -123,6 +123,10 @@ async function gracefulShutdown(signal) {
 	if (shuttingDown) return;
 	shuttingDown = true;
 	console.log(`Shutting down (${signal})...`);
+	if (client.heartbeatInterval) {
+		clearInterval(client.heartbeatInterval);
+		client.heartbeatInterval = undefined;
+	}
 	try {
 		if (client.isReady()) {
 			await sendShutdownDm(client, `Host sent ${signal} (bot process stopping).`);
