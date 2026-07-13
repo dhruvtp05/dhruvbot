@@ -8,19 +8,19 @@
 
 ---
 
-## ✨ Features
+##  Features
 
-### ⚙️ Core System
+###  Core System
 - **Auto-loading Commands** — Slash commands are automatically discovered and loaded from the `commands/` directory; no manual registration needed.
 - **One-command Deployment** — Register or update all slash commands instantly with `npm run deploy`.
 - **Web Health Endpoint** — Responds to `GET /` with `"Bot is running"`, keeping the bot alive on free hosts like Render or Railway.
 - **Secure Config** — All credentials managed via a `.env` file; nothing sensitive is hardcoded.
 
-### 🎉 Fun / Reaction Triggers
-- 🍅 **Tomato Trigger** — When a message receives 3 🍅 reactions, the bot fires back with `"Tomato!"`.
-- 📠 **Truth Nuke Trigger** — When a message receives 3 `:true:` reactions, the bot drops `truth nuke.png`.
+###  Fun / Reaction Triggers
+-  **Tomato Trigger** — When a message receives 3 🍅 reactions, the bot fires back with `"Tomato!"`.
+-  **Truth Nuke Trigger** — When a message receives 3 `:true:` reactions, the bot drops `truth nuke.png`.
 
-### 🛠️ Utility Commands
+###  Utility Commands
 | Command | Description |
 |---|---|
 | `/avatar [user]` | Displays a user's profile picture |
@@ -28,7 +28,7 @@
 | `/serverinfo` | Displays server details: owner, member count, creation date |
 | `/roleinfo <role>` | Shows role details: member count, position, mentionable/hoisted status |
 
-### 🛡️ Moderation Commands
+###  Moderation Commands
 | Command | Description |
 |---|---|
 | `/warn <user> [reason]` | Issues a warning to a user |
@@ -39,12 +39,12 @@
 | `/kick <user> [reason]` | Kicks a user from the server |
 | `/ban <user> [reason]` | Bans a user from the server |
 
-> ⚠️ All moderation actions are automatically logged to the server's designated log channel. The warning system uses lightweight local JSON storage.
+>  All moderation actions are automatically logged to the server's designated log channel. The warning system uses lightweight local JSON storage.
 
-### 🖼️ Media Tool
+###  Media Tool
 - **`/img2gif <image>`** — Converts a static image upload to a GIF. Automatically rejects non-images and existing GIFs.
 
-### 📜 Server Logging
+###  Server Logging
 Automatically logs events to `#audit-logs` (falls back to `#server-logs`) using rich embeds. Tracked events include:
 
 - Member join / leave
@@ -55,7 +55,7 @@ Automatically logs events to `#audit-logs` (falls back to `#server-logs`) using 
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ```bash
 # 1. Clone and navigate to the project
@@ -77,7 +77,7 @@ npm start
 
 ---
 
-## 🔑 Configuration & Environment Variables
+##  Configuration & Environment Variables
 
 Create a `.env` file in the root of the project. Never commit this file — it contains your bot token.
 
@@ -86,11 +86,11 @@ Create a `.env` file in the root of the project. Never commit this file — it c
 # dhruvbot — Environment Variables
 # ==========================================
 
-# 🤖 Discord Bot Token (Required)
+#  Discord Bot Token (Required)
 # https://discord.com/developers/applications
 DISCORD_TOKEN=your-discord-bot-token-here
 
-# ⚙️ Application & Guild IDs (Required for deploy)
+#  Application & Guild IDs (Required for deploy)
 CLIENT_ID=your-bot-client-id-here
 GUILD_ID=your-test-server-id-here   # Optional: omit to deploy commands globally
 ```
@@ -102,7 +102,7 @@ GUILD_ID=your-test-server-id-here   # Optional: omit to deploy commands globally
 
 ---
 
-## 💻 Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -113,7 +113,7 @@ GUILD_ID=your-test-server-id-here   # Optional: omit to deploy commands globally
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 dhruvbot/
@@ -128,6 +128,6 @@ dhruvbot/
 
 ---
 
-## 📄 License
+##  License
 
 This project is open source. Feel free to fork, modify, and build on it.
