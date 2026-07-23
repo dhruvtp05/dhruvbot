@@ -16,10 +16,6 @@
 - **Web Health Endpoint** — Responds to `GET /` with `"Bot is running"`, keeping the bot alive on free hosts like Render or Railway.
 - **Secure Config** — All credentials managed via a `.env` file; nothing sensitive is hardcoded.
 
-###  Fun / Reaction Triggers
--  **Tomato Trigger** — When a message receives 3 🍅 reactions, the bot fires back with `"Tomato!"`.
--  **Truth Nuke Trigger** — When a message receives 3 `:true:` reactions, the bot drops `truth nuke.png`.
-
 ###  Utility Commands
 | Command | Description |
 |---|---|
