@@ -125,9 +125,3 @@ dhruvbot/
 ├── deploy-commands.js
 └── .env              # Your environment variables (not committed)
 ```
-
----
-
-##  License
-
-This project is open source. Feel free to fork, modify, and build on it.
